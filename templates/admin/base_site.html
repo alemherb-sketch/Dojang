@@ -52,13 +52,22 @@
     }
 
     /* Search box */
-    #nav-sidebar [class*="bg-white"] {
+    #nav-sidebar [x-data="globalSearch"] [class*="bg-white"],
+    #nav-sidebar form [class*="bg-white"] {
         background-color: rgba(255, 255, 255, 0.08) !important;
         border-color: rgba(255, 255, 255, 0.2) !important;
     }
-    #nav-sidebar [class*="bg-white"] .material-symbols-outlined,
-    #nav-sidebar [class*="bg-white"] div {
+    #nav-sidebar [x-data="globalSearch"] [class*="bg-white"] .material-symbols-outlined,
+    #nav-sidebar [x-data="globalSearch"] [class*="bg-white"] div {
         color: #cbd5e1 !important;
+    }
+
+    /* Fix transparent background on the user dropdown menu */
+    #nav-sidebar nav.z-50, #nav-sidebar-inner nav.z-50 {
+        background-color: #ffffff !important;
+    }
+    html.dark #nav-sidebar nav.z-50, html.dark #nav-sidebar-inner nav.z-50 {
+        background-color: #1e293b !important;
     }
 
     /* User footer block + "All applications" link hover state */
