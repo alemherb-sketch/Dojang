@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import QRCode from 'react-qr-code';
 
 export default function Dashboard() {
@@ -16,9 +16,9 @@ export default function Dashboard() {
     const fetchData = async () => {
       try {
         const config = { headers: { Authorization: `Bearer ${token}` } };
-        const userRes = await axios.get('http://127.0.0.1:8000/api/profile/', config);
+        const userRes = await api.get('/api/profile/', config);
         setProfile(userRes.data);
-        const actRes = await axios.get('http://127.0.0.1:8000/api/activities/', config);
+        const actRes = await api.get('/api/activities/', config);
         setActivities(actRes.data);
       } catch (err) {
         localStorage.removeItem('token');
