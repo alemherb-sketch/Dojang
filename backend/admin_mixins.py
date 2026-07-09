@@ -39,6 +39,14 @@ class RowActionsMixin:
             )
             parts.append(
                 format_html(
+                    '<a href="{}" class="djd-row-action djd-row-action--view" '
+                    'title="{}"><span class="material-symbols-outlined">visibility</span></a>',
+                    change_url,
+                    _("Ver"),
+                )
+            )
+            parts.append(
+                format_html(
                     '<a href="{}" class="djd-row-action djd-row-action--edit" '
                     'title="{}"><span class="material-symbols-outlined">edit</span></a>',
                     change_url,
