@@ -38,6 +38,18 @@ def get_product_price(request, product_id):
         return JsonResponse({'price': ''}, status=404)
 
 
+def debug_sales(request):
+    from billing.models import Sale
+    sales = Sale.objects.all().order_by('-id')[:5]
+    output = ""
+    for s in sales:
+        output += f"Sale {s.id}: Total={s.total}\n"
+        for i in s.items.all():
+            output += f"  Item: Qty={i.quantity}, Price={i.price_at_sale}\n"
+    from django.http import HttpResponse
+    return HttpResponse(output, content_type="text/plain")
+
+
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -48,6 +60,7 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('api/concept-price/<int:concept_id>/', get_concept_price, name='get_concept_price'),
     path('api/product-price/<int:product_id>/', get_product_price, name='get_product_price'),
+    path('debug-sales/', debug_sales, name='debug_sales'),
 ]
 
 from django.urls import re_path
