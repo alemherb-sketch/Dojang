@@ -1,0 +1,136 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"MIME-Version: 1.0\n"
+"Language: es\n"
+
+msgid "Add %(name)s"
+msgstr "Añadir %(name)s"
+
+msgid "Add row"
+msgstr "Añadir fila"
+
+msgid "All applications"
+msgstr "Todas las aplicaciones"
+
+msgid "Apply Filters"
+msgstr "Aplicar filtros"
+
+msgid "Choose file to upload"
+msgstr "Elegir archivo para subir"
+
+msgid "Clear"
+msgstr "Limpiar"
+
+msgid "Clear all filters"
+msgstr "Limpiar todos los filtros"
+
+msgid "Click to cancel"
+msgstr "Clic para cancelar"
+
+msgid "Click to download"
+msgstr "Clic para descargar"
+
+msgid "Close"
+msgstr "Cerrar"
+
+msgid "Dark"
+msgstr "Oscuro"
+
+msgid "Expand row"
+msgstr "Expandir fila"
+
+msgid "Go back"
+msgstr "Volver"
+
+msgid "Hide counts"
+msgstr "Ocultar conteos"
+
+msgid "Image preview"
+msgstr "Vista previa de imagen"
+
+msgid "Light"
+msgstr "Claro"
+
+msgid "Log in again"
+msgstr "Iniciar sesión de nuevo"
+
+msgid "More actions"
+msgstr "Más acciones"
+
+msgid "Navigate"
+msgstr "Navegar"
+
+msgid "No data"
+msgstr "Sin datos"
+
+msgid "No results found"
+msgstr "No se encontraron resultados"
+
+msgid "No, take me back"
+msgstr "No, volver"
+
+msgid "Nothing matched your search"
+msgstr "Nada coincidió con tu búsqueda"
+
+msgid "Recent searches"
+msgstr "Búsquedas recientes"
+
+msgid "Record picture"
+msgstr "Foto del registro"
+
+msgid "Remove"
+msgstr "Quitar"
+
+msgid "Return to site"
+msgstr "Volver al sitio"
+
+msgid "Run"
+msgstr "Ejecutar"
+
+msgid "Run the selected action"
+msgstr "Ejecutar la acción seleccionada"
+
+msgid "Save and view"
+msgstr "Guardar y ver"
+
+msgid "Search apps and models..."
+msgstr "Buscar apps y modelos..."
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "Select all rows"
+msgstr "Seleccionar todas las filas"
+
+msgid "Show counts"
+msgstr "Mostrar conteos"
+
+msgid "System"
+msgstr "Sistema"
+
+msgid "Thanks for spending some quality time with the web site today."
+msgstr "Gracias por dedicar tiempo al sitio hoy."
+
+msgid "This item will be deleted."
+msgstr "Este elemento será eliminado."
+
+msgid "This page yielded into no results. Create a new item or reset your filters."
+msgstr "Esta página no arrojó resultados. Crea un nuevo elemento o restablece los filtros."
+
+msgid "Toggle password visibility"
+msgstr "Mostrar/ocultar contraseña"
+
+msgid "Type to search"
+msgstr "Escribe para buscar"
+
+msgid "Unknown"
+msgstr "Desconocido"
+
+msgid "View"
+msgstr "Ver"
+
+msgid "You have been successfully logged out from the administration"
+msgstr "Has cerrado sesión correctamente en la administración"
+

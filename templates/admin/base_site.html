@@ -1,0 +1,122 @@
+{% extends "admin/base.html" %}
+{% load i18n %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block branding %}
+    {% include "unfold/helpers/site_branding.html" %}
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Dojang Segma sidebar branding — applies to every admin page.
+       Unfold's real sidebar container is #nav-sidebar (not #sidebar), and its
+       inner scroll area #nav-sidebar-inner carries its own background too, so
+       both need the override. Active links get an `.active` class (Unfold
+       does not use aria-current). */
+    #nav-sidebar,
+    #nav-sidebar-inner {
+        background-color: #0f3d7a !important;
+    }
+    #nav-sidebar .border-b,
+    #nav-sidebar .border-t {
+        border-color: rgba(255, 255, 255, 0.12) !important;
+    }
+    #nav-sidebar h2 {
+        color: #93c5fd !important;
+    }
+    #nav-sidebar a {
+        color: #e2e8f0 !important;
+    }
+    #nav-sidebar a:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+        color: #ffffff !important;
+    }
+    #nav-sidebar .material-symbols-outlined {
+        color: #94a3b8 !important;
+    }
+    #nav-sidebar a:hover .material-symbols-outlined {
+        color: #ffffff !important;
+    }
+    #nav-sidebar a.active {
+        background: linear-gradient(90deg, #1d4ed8, #2563eb) !important;
+        color: #ffffff !important;
+        border-left: 4px solid #60a5fa !important;
+        padding-left: calc(0.75rem - 4px) !important;
+    }
+    #nav-sidebar a.active .material-symbols-outlined {
+        color: #ffffff !important;
+    }
+
+    /* Search box */
+    #nav-sidebar [class*="bg-white"] {
+        background-color: rgba(255, 255, 255, 0.08) !important;
+        border-color: rgba(255, 255, 255, 0.2) !important;
+    }
+    #nav-sidebar [class*="bg-white"] .material-symbols-outlined,
+    #nav-sidebar [class*="bg-white"] div {
+        color: #cbd5e1 !important;
+    }
+
+    /* User footer block + "All applications" link hover state */
+    #nav-sidebar .hover\:bg-base-100:hover {
+        background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    /* ---- Row action buttons (Editar / Eliminar) in every changelist ---- */
+    .djd-row-actions {
+        display: inline-flex;
+        gap: 0.35rem;
+        align-items: center;
+    }
+    .djd-row-action {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 30px;
+        height: 30px;
+        border-radius: 7px;
+        text-decoration: none;
+        transition: background-color 0.15s ease, color 0.15s ease;
+    }
+    .djd-row-action .material-symbols-outlined {
+        font-size: 18px;
+        line-height: 1;
+    }
+    .djd-row-action--edit {
+        color: #2563eb;
+        background-color: #eff6ff;
+    }
+    .djd-row-action--edit:hover {
+        color: #ffffff;
+        background-color: #2563eb;
+    }
+    .djd-row-action--delete {
+        color: #dc2626;
+        background-color: #fef2f2;
+    }
+    .djd-row-action--delete:hover {
+        color: #ffffff;
+        background-color: #dc2626;
+    }
+    html.dark .djd-row-action--edit {
+        color: #60a5fa;
+        background-color: #1e293b;
+    }
+    html.dark .djd-row-action--edit:hover {
+        color: #ffffff;
+        background-color: #2563eb;
+    }
+    html.dark .djd-row-action--delete {
+        color: #f87171;
+        background-color: #3a1e22;
+    }
+    html.dark .djd-row-action--delete:hover {
+        color: #ffffff;
+        background-color: #dc2626;
+    }
+</style>
+{% endblock %}

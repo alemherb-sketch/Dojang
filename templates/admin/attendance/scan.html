@@ -1,0 +1,287 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}Registrar Asistencia | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block extrastyle %}{{ block.super }}
+<style>
+    .djd-scan-wrap { max-width: 960px; margin: 0 auto; padding: 1rem 0 2rem; }
+    .djd-scan-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 1.25rem; align-items: start; }
+    @media (max-width: 900px) { .djd-scan-grid { grid-template-columns: 1fr; } }
+
+    .djd-card {
+        background: #fff; border: 1px solid #e2e8f0; border-radius: 1rem;
+        padding: 1.4rem; box-shadow: 0 1px 3px rgba(15,23,42,.06);
+    }
+    .djd-card h2 {
+        display: flex; align-items: center; gap: .5rem; margin: 0 0 1rem;
+        font-size: 1.05rem; font-weight: 700; color: #1e293b;
+    }
+    .djd-field { margin-bottom: 1rem; }
+    .djd-field label { display: block; font-size: .8rem; font-weight: 700; color: #475569; margin-bottom: .35rem; }
+    .djd-field select, .djd-scan-input {
+        width: 100%; box-sizing: border-box; border: 2px solid #e2e8f0; border-radius: .6rem;
+        padding: .6rem .85rem; font-size: .95rem; color: #1e293b; background: #fff; outline: none;
+        transition: border-color .15s ease, box-shadow .15s ease;
+    }
+    .djd-scan-input { font-size: 1.35rem; font-weight: 700; letter-spacing: .02em; text-align: center; }
+    .djd-field select:focus, .djd-scan-input:focus {
+        border-color: #38bdf8; box-shadow: 0 0 0 4px rgba(56,189,248,.15);
+    }
+    .djd-scan-hint { font-size: .8rem; color: #64748b; margin: .5rem 0 0; text-align: center; }
+
+    .djd-btn {
+        display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+        border: none; border-radius: .6rem; padding: .7rem 1.2rem; font-size: .95rem; font-weight: 700;
+        cursor: pointer; text-decoration: none; transition: background .15s ease, opacity .15s ease;
+    }
+    .djd-btn--primary { background: #2563eb; color: #fff; width: 100%; }
+    .djd-btn--primary:hover { background: #1d4ed8; }
+    .djd-btn--ghost { background: #eff6ff; color: #2563eb; }
+    .djd-btn--ghost:hover { background: #dbeafe; }
+    .djd-btn .material-symbols-outlined { font-size: 20px; }
+
+    .djd-feedback { margin-top: 1rem; border-radius: .75rem; padding: 1rem 1.1rem; display: none; align-items: center; gap: .75rem; }
+    .djd-feedback .material-symbols-outlined { font-size: 28px; }
+    .djd-feedback.is-shown { display: flex; }
+    .djd-feedback strong { display: block; font-size: 1.05rem; }
+    .djd-feedback small { opacity: .85; }
+    .djd-feedback--ok { background: #dcfce7; color: #166534; }
+    .djd-feedback--dup { background: #fef3c7; color: #92400e; }
+    .djd-feedback--err { background: #fee2e2; color: #991b1b; }
+
+    #djd-camera-box { margin-top: 1rem; display: none; }
+    #djd-camera-box.is-shown { display: block; }
+    #djd-video { width: 100%; border-radius: .75rem; background: #0f172a; aspect-ratio: 4/3; object-fit: cover; }
+
+    .djd-scan-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+    .djd-scan-table th { text-align: left; font-size: .72rem; text-transform: uppercase; letter-spacing: .05em;
+        color: #64748b; padding: .5rem .4rem; border-bottom: 2px solid #e2e8f0; }
+    .djd-scan-table td { padding: .55rem .4rem; border-bottom: 1px solid #f1f5f9; color: #1e293b; }
+    .djd-scan-table tr.is-new td { animation: djdFlash 1.2s ease; }
+    @keyframes djdFlash { from { background: #dcfce7; } to { background: transparent; } }
+    .djd-empty-row td { color: #94a3b8; font-style: italic; }
+
+    html.dark .djd-card { background: #1e293b; border-color: #334155; }
+    html.dark .djd-card h2, html.dark .djd-scan-table td { color: #f1f5f9; }
+    html.dark .djd-field select, html.dark .djd-scan-input { background: #0f172a; border-color: #334155; color: #f1f5f9; }
+    html.dark .djd-scan-table th { color: #94a3b8; border-color: #334155; }
+    html.dark .djd-scan-table td { border-color: #334155; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="djd-scan-wrap">
+    {% csrf_token %}
+    <div class="djd-scan-grid">
+        <!-- Scanner console -->
+        <div class="djd-card">
+            <h2><span class="material-symbols-outlined" style="color:#2563eb">qr_code_scanner</span> Escanear QR del alumno</h2>
+
+            <div class="djd-field">
+                <label for="djd-section">Sección (opcional)</label>
+                <select id="djd-section">
+                    <option value="">— Sin sección —</option>
+                    {% for section in sections %}
+                        <option value="{{ section.pk }}">{{ section.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="djd-field">
+                <label for="djd-status">Estado</label>
+                <select id="djd-status">
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="djd-field">
+                <label for="djd-code">Código escaneado</label>
+                <input type="text" id="djd-code" class="djd-scan-input" autocomplete="off"
+                       placeholder="Escanea o escribe el código…" autofocus>
+                <p class="djd-scan-hint">Usa un lector USB (funciona como teclado) o la cámara. Presiona Enter para registrar.</p>
+            </div>
+
+            <button type="button" id="djd-camera-toggle" class="djd-btn djd-btn--ghost" style="width:100%;margin-bottom:.6rem">
+                <span class="material-symbols-outlined">photo_camera</span> Usar cámara
+            </button>
+
+            <div id="djd-camera-box">
+                <video id="djd-video" playsinline muted></video>
+            </div>
+
+            <div id="djd-feedback" class="djd-feedback">
+                <span class="material-symbols-outlined" id="djd-feedback-icon">check_circle</span>
+                <div>
+                    <strong id="djd-feedback-title"></strong>
+                    <small id="djd-feedback-detail"></small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's registrations -->
+        <div class="djd-card">
+            <h2><span class="material-symbols-outlined" style="color:#2563eb">fact_check</span> Registrados hoy</h2>
+            <table class="djd-scan-table">
+                <thead>
+                    <tr><th>Alumno</th><th>Sección</th><th>Estado</th><th>Hora</th></tr>
+                </thead>
+                <tbody id="djd-today">
+                    {% for r in recent %}
+                        <tr>
+                            <td>{{ r.student }}</td>
+                            <td>{{ r.section }}</td>
+                            <td>{{ r.status }}</td>
+                            <td>{{ r.time }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr class="djd-empty-row"><td colspan="4">Aún no hay asistencias hoy.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    var registerUrl = "{% url 'attendance:scan_register' %}";
+    var csrfToken = document.querySelector('#djd-code') && document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    var codeInput = document.getElementById('djd-code');
+    var sectionSel = document.getElementById('djd-section');
+    var statusSel = document.getElementById('djd-status');
+    var todayBody = document.getElementById('djd-today');
+    var fb = document.getElementById('djd-feedback');
+    var fbIcon = document.getElementById('djd-feedback-icon');
+    var fbTitle = document.getElementById('djd-feedback-title');
+    var fbDetail = document.getElementById('djd-feedback-detail');
+
+    var busy = false;
+    var lastCode = null;
+    var lastAt = 0;
+
+    function showFeedback(kind, title, detail) {
+        fb.className = 'djd-feedback is-shown djd-feedback--' + kind;
+        fbIcon.textContent = kind === 'ok' ? 'check_circle' : (kind === 'dup' ? 'info' : 'error');
+        fbTitle.textContent = title;
+        fbDetail.textContent = detail || '';
+    }
+
+    function prependRow(data) {
+        var empty = todayBody.querySelector('.djd-empty-row');
+        if (empty) empty.remove();
+        var tr = document.createElement('tr');
+        tr.className = 'is-new';
+        tr.innerHTML = '<td></td><td></td><td></td><td></td>';
+        var tds = tr.querySelectorAll('td');
+        tds[0].textContent = data.student;
+        tds[1].textContent = data.section || '—';
+        tds[2].textContent = data.status;
+        tds[3].textContent = (data.time || '').slice(0, 5);
+        todayBody.insertBefore(tr, todayBody.firstChild);
+    }
+
+    function register(code) {
+        if (!code || busy) return;
+        // debounce identical scans within 3s (camera fires repeatedly)
+        var now = Date.now();
+        if (code === lastCode && (now - lastAt) < 3000) return;
+        lastCode = code; lastAt = now;
+
+        busy = true;
+        var body = new FormData();
+        body.append('code', code);
+        body.append('section', sectionSel.value);
+        body.append('status', statusSel.value);
+        body.append('csrfmiddlewaretoken', csrfToken);
+
+        fetch(registerUrl, { method: 'POST', body: body, headers: { 'X-CSRFToken': csrfToken } })
+            .then(function (r) { return r.json().then(function (j) { return { status: r.status, data: j }; }); })
+            .then(function (res) {
+                var d = res.data;
+                if (d.ok) {
+                    showFeedback('ok', d.student, d.status + ' · ' + d.time);
+                    prependRow(d);
+                } else if (d.duplicate) {
+                    showFeedback('dup', d.student, d.message);
+                } else {
+                    showFeedback('err', 'No registrado', d.message);
+                }
+            })
+            .catch(function () { showFeedback('err', 'Error de conexión', 'No se pudo registrar. Intenta de nuevo.'); })
+            .finally(function () {
+                busy = false;
+                codeInput.value = '';
+                codeInput.focus();
+            });
+    }
+
+    // Keyboard-wedge / manual: submit on Enter
+    codeInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            register(codeInput.value.trim());
+        }
+    });
+    // keep focus on the input for hardware scanners
+    document.addEventListener('click', function (e) {
+        if (!e.target.closest('select') && !e.target.closest('button') && !e.target.closest('#djd-video')) {
+            codeInput.focus();
+        }
+    });
+
+    // ---- Optional camera scanning via native BarcodeDetector ----
+    var cameraToggle = document.getElementById('djd-camera-toggle');
+    var cameraBox = document.getElementById('djd-camera-box');
+    var video = document.getElementById('djd-video');
+    var stream = null, detector = null, rafId = null, scanning = false;
+
+    function stopCamera() {
+        scanning = false;
+        if (rafId) cancelAnimationFrame(rafId);
+        if (stream) { stream.getTracks().forEach(function (t) { t.stop(); }); stream = null; }
+        cameraBox.classList.remove('is-shown');
+        cameraToggle.innerHTML = '<span class="material-symbols-outlined">photo_camera</span> Usar cámara';
+    }
+
+    function loopDetect() {
+        if (!scanning) return;
+        detector.detect(video).then(function (codes) {
+            if (codes && codes.length) {
+                register((codes[0].rawValue || '').trim());
+            }
+        }).catch(function () {}).finally(function () {
+            rafId = requestAnimationFrame(loopDetect);
+        });
+    }
+
+    cameraToggle.addEventListener('click', function () {
+        if (scanning) { stopCamera(); return; }
+        if (!('BarcodeDetector' in window)) {
+            showFeedback('err', 'Cámara no disponible', 'Tu navegador no soporta escaneo por cámara. Usa un lector USB o escribe el código.');
+            return;
+        }
+        detector = new window.BarcodeDetector({ formats: ['qr_code'] });
+        navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+            .then(function (s) {
+                stream = s;
+                video.srcObject = s;
+                video.play();
+                cameraBox.classList.add('is-shown');
+                cameraToggle.innerHTML = '<span class="material-symbols-outlined">stop_circle</span> Detener cámara';
+                scanning = true;
+                rafId = requestAnimationFrame(loopDetect);
+            })
+            .catch(function () {
+                showFeedback('err', 'Sin acceso a la cámara', 'Concede permiso de cámara o usa un lector USB.');
+            });
+    });
+
+    window.addEventListener('beforeunload', stopCamera);
+    codeInput.focus();
+})();
+</script>
+{% endblock %}

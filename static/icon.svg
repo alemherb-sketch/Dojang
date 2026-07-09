@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Dojang Segma">
+  <defs>
+    <linearGradient id="djdBadge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1d4ed8"/>
+      <stop offset="0.55" stop-color="#2563eb"/>
+      <stop offset="1" stop-color="#38bdf8"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="64" height="64" rx="16" fill="url(#djdBadge)"/>
+  <!-- Martial artist performing a side kick, white silhouette -->
+  <g fill="#ffffff">
+    <!-- head -->
+    <circle cx="24" cy="17" r="5"/>
+    <!-- torso -->
+    <path d="M20 23 q4 -2 8 0 l3 11 q0.5 3 -2.5 3.5 l-9 1.2 q-3 0.4 -3.4 -2.6 l-1.2 -8 q-0.4 -3 2.5 -3.6 z"/>
+    <!-- extended kicking leg -->
+    <path d="M27 29 l22 5 a3.2 3.2 0 0 1 -1.4 6.3 l-21 -4.8 a3.2 3.2 0 0 1 1.4 -6.5 z"/>
+    <!-- foot -->
+    <path d="M47 33 l6 1.2 a2.6 2.6 0 0 1 -0.9 5.1 l-6 -1.1 z"/>
+    <!-- support leg -->
+    <path d="M18 37 l-3.5 13 a3.2 3.2 0 0 0 6.2 1.7 l3.3 -12.4 z"/>
+    <!-- support foot -->
+    <path d="M11.5 49.5 l7 1.9 a2.6 2.6 0 0 1 -1.4 5 l-7 -1.9 z"/>
+    <!-- guard arm -->
+    <path d="M26 26 l9 -3.5 a2.6 2.6 0 0 0 -1.9 -4.8 l-9 3.5 a2.6 2.6 0 0 0 1.9 4.8 z"/>
+  </g>
+</svg>

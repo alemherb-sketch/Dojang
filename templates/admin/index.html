@@ -1,0 +1,473 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static unfold %}
+
+{% block title %}Dashboard | {{ site_title|default:_('Django site admin') }}{% endblock %}
+
+{% block content %}
+<style>
+    /* ---- Dashboard (self-contained CSS: no reliance on Unfold's precompiled
+       Tailwind subset, which does not include arbitrary utility classes) ---- */
+    .djd-wrap {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 1rem 0 2rem;
+        font-family: inherit;
+    }
+
+    .djd-header {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(120deg, #1d4ed8 0%, #2563eb 55%, #38bdf8 100%);
+        color: #ffffff;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1.25rem;
+        box-shadow: 0 10px 25px -10px rgba(29, 78, 216, 0.45);
+    }
+    .djd-header-icon-bg {
+        position: absolute;
+        right: -1rem;
+        top: -1.5rem;
+        font-size: 11rem;
+        opacity: 0.12;
+        pointer-events: none;
+        line-height: 1;
+    }
+    .djd-header-text { position: relative; z-index: 1; }
+    .djd-header-title {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 1.75rem;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+        margin: 0;
+    }
+    .djd-header-sub {
+        margin: 0.4rem 0 0;
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 1rem;
+        font-weight: 500;
+    }
+    .djd-header-date {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: rgba(255, 255, 255, 0.16);
+        border: 1px solid rgba(255, 255, 255, 0.35);
+        border-radius: 0.75rem;
+        padding: 0.6rem 1rem;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+        white-space: nowrap;
+    }
+
+    .djd-kpis {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+    @media (max-width: 1024px) {
+        .djd-kpis { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 560px) {
+        .djd-kpis { grid-template-columns: 1fr; }
+    }
+
+    .djd-kpi {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        background: #ffffff;
+        border-radius: 1rem;
+        padding: 1.25rem 1.4rem;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 8px 20px -12px rgba(15, 23, 42, 0.15);
+        overflow: hidden;
+        transition: box-shadow 0.2s ease, transform 0.2s ease;
+    }
+    .djd-kpi:hover {
+        box-shadow: 0 4px 8px rgba(15, 23, 42, 0.1), 0 14px 28px -12px rgba(15, 23, 42, 0.22);
+        transform: translateY(-1px);
+    }
+    .djd-kpi::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 5px;
+        background: var(--djd-accent, #2563eb);
+    }
+    .djd-kpi-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: #64748b;
+        margin: 0 0 0.35rem;
+    }
+    .djd-kpi-value {
+        font-size: 1.9rem;
+        font-weight: 800;
+        color: #1e293b;
+        margin: 0 0 0.3rem;
+        line-height: 1.1;
+    }
+    .djd-kpi-trend {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: #16a34a;
+        margin: 0;
+    }
+    .djd-kpi-trend .material-symbols-outlined { font-size: 14px; }
+    .djd-kpi-trend.is-neutral { color: #94a3b8; }
+    .djd-kpi-icon {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.2rem;
+        height: 3.2rem;
+        border-radius: 0.85rem;
+        background: var(--djd-accent-bg, #dbeafe);
+        color: var(--djd-accent, #2563eb);
+    }
+    .djd-kpi-icon .material-symbols-outlined { font-size: 1.7rem; }
+
+    .djd-kpi--blue   { --djd-accent: #2563eb; --djd-accent-bg: #dbeafe; }
+    .djd-kpi--orange { --djd-accent: #ea580c; --djd-accent-bg: #ffedd5; }
+    .djd-kpi--green  { --djd-accent: #16a34a; --djd-accent-bg: #dcfce7; }
+    .djd-kpi--purple { --djd-accent: #9333ea; --djd-accent-bg: #f3e8ff; }
+
+    .djd-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.25rem;
+        align-items: start;
+    }
+    @media (max-width: 1024px) {
+        .djd-grid { grid-template-columns: 1fr; }
+    }
+
+    .djd-panel {
+        background: #ffffff;
+        border: 1px solid #f1f5f9;
+        border-radius: 1rem;
+        padding: 1.4rem;
+        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06);
+    }
+    .djd-panel-title {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin: 0 0 1rem;
+        padding-bottom: 0.85rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .djd-panel-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.85rem;
+        border-bottom: 1px solid #f1f5f9;
+    }
+    .djd-panel-head .djd-panel-title { margin: 0; padding: 0; border: 0; }
+    .djd-legend {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: #475569;
+    }
+    .djd-legend-item { display: flex; align-items: center; gap: 0.35rem; }
+    .djd-dot { width: 0.6rem; height: 0.6rem; border-radius: 999px; display: inline-block; }
+    .djd-dot--blue { background: #2563eb; }
+    .djd-dot--red { background: #f87171; }
+
+    .djd-chart {
+        position: relative;
+        height: 17rem;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-around;
+        gap: 0.5rem;
+        padding: 0 0.5rem 1.75rem 2.6rem;
+        border-left: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .djd-chart-yaxis {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 1.75rem;
+        width: 2.2rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #94a3b8;
+        text-align: right;
+    }
+    .djd-bar-group {
+        position: relative;
+        display: flex;
+        align-items: flex-end;
+        gap: 0.35rem;
+        height: 100%;
+    }
+    .djd-bar {
+        width: 1.7rem;
+        border-radius: 0.35rem 0.35rem 0 0;
+        transition: opacity 0.15s ease;
+    }
+    .djd-bar:hover { opacity: 0.8; }
+    .djd-bar--blue { background: #3b82f6; }
+    .djd-bar--red { background: #f87171; }
+    .djd-bar-label {
+        position: absolute;
+        bottom: -1.5rem;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: #64748b;
+        white-space: nowrap;
+    }
+
+    .djd-progress-item + .djd-progress-item { margin-top: 1.4rem; }
+    .djd-progress-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        font-size: 0.85rem;
+        font-weight: 700;
+        color: #475569;
+        margin-bottom: 0.4rem;
+    }
+    .djd-progress-track {
+        width: 100%;
+        height: 0.55rem;
+        background: #f1f5f9;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+    .djd-progress-fill { height: 100%; border-radius: 999px; }
+
+    .djd-cta {
+        margin-top: 1.75rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid #f1f5f9;
+        text-align: center;
+    }
+    .djd-cta-btn {
+        display: inline-block;
+        background: #eff6ff;
+        color: #2563eb;
+        font-weight: 700;
+        font-size: 0.85rem;
+        padding: 0.6rem 1.4rem;
+        border-radius: 0.6rem;
+        text-decoration: none;
+        transition: background 0.15s ease;
+    }
+    .djd-cta-btn:hover { background: #dbeafe; color: #1d4ed8; }
+
+    /* ---- Dark mode (Unfold toggles a `dark` class on <html>) ---- */
+    html.dark .djd-panel,
+    html.dark .djd-kpi {
+        background: #1e293b;
+        border-color: #334155;
+        box-shadow: none;
+    }
+    html.dark .djd-kpi-value,
+    html.dark .djd-panel-title,
+    html.dark .djd-progress-row {
+        color: #f1f5f9;
+    }
+    html.dark .djd-kpi-label { color: #94a3b8; }
+    html.dark .djd-panel-title,
+    html.dark .djd-panel-head { border-color: #334155; }
+    html.dark .djd-chart { border-color: #334155; }
+    html.dark .djd-progress-track { background: #334155; }
+    html.dark .djd-cta { border-color: #334155; }
+    html.dark .djd-cta-btn { background: #1e3a5f; color: #93c5fd; }
+    html.dark .djd-cta-btn:hover { background: #24466e; }
+</style>
+
+<div class="djd-wrap">
+
+    <div class="djd-header">
+        <span class="material-symbols-outlined djd-header-icon-bg">dashboard</span>
+        <div class="djd-header-text">
+            <h1 class="djd-header-title">
+                <span class="material-symbols-outlined">speed</span>
+                Dashboard Estratégico
+            </h1>
+            <p class="djd-header-sub">Centro de control y toma de decisiones en tiempo real — Dojang Segma</p>
+        </div>
+        <div class="djd-header-date">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span>{% now "d/m/Y" %} - {% now "H:i" %}</span>
+        </div>
+    </div>
+
+    <div class="djd-kpis">
+        <div class="djd-kpi djd-kpi--blue">
+            <div>
+                <p class="djd-kpi-label">Ingresos del Mes</p>
+                <h3 class="djd-kpi-value">S/ 4,250</h3>
+                <p class="djd-kpi-trend">
+                    <span class="material-symbols-outlined">trending_up</span> 12.5% vs mes ant.
+                </p>
+            </div>
+            <div class="djd-kpi-icon">
+                <span class="material-symbols-outlined">attach_money</span>
+            </div>
+        </div>
+
+        <div class="djd-kpi djd-kpi--orange">
+            <div>
+                <p class="djd-kpi-label">Pensiones Pendientes</p>
+                <h3 class="djd-kpi-value">12</h3>
+                <p class="djd-kpi-trend is-neutral">Mensualidades</p>
+            </div>
+            <div class="djd-kpi-icon">
+                <span class="material-symbols-outlined">hourglass_empty</span>
+            </div>
+        </div>
+
+        <div class="djd-kpi djd-kpi--green">
+            <div>
+                <p class="djd-kpi-label">Alumnos Activos</p>
+                <h3 class="djd-kpi-value">85</h3>
+                <p class="djd-kpi-trend">
+                    <span class="material-symbols-outlined">trending_up</span> 5 nuevos
+                </p>
+            </div>
+            <div class="djd-kpi-icon">
+                <span class="material-symbols-outlined">sports_martial_arts</span>
+            </div>
+        </div>
+
+        <div class="djd-kpi djd-kpi--purple">
+            <div>
+                <p class="djd-kpi-label">Asistencias Hoy</p>
+                <h3 class="djd-kpi-value">32</h3>
+                <p class="djd-kpi-trend is-neutral">Total en el día</p>
+            </div>
+            <div class="djd-kpi-icon">
+                <span class="material-symbols-outlined">how_to_reg</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="djd-grid">
+        <div class="djd-panel">
+            <div class="djd-panel-head">
+                <h3 class="djd-panel-title">
+                    <span class="material-symbols-outlined" style="color:#3b82f6;">show_chart</span>
+                    Tendencia: Ingresos vs Gastos (S/)
+                </h3>
+                <div class="djd-legend">
+                    <span class="djd-legend-item"><span class="djd-dot djd-dot--blue"></span> Ingresos (S/)</span>
+                    <span class="djd-legend-item"><span class="djd-dot djd-dot--red"></span> Gastos (S/)</span>
+                </div>
+            </div>
+
+            <div class="djd-chart">
+                <div class="djd-chart-yaxis">
+                    <span>S/ 5k</span>
+                    <span>S/ 4k</span>
+                    <span>S/ 3k</span>
+                    <span>S/ 2k</span>
+                    <span>S/ 1k</span>
+                    <span>0</span>
+                </div>
+
+                <div class="djd-bar-group">
+                    <div class="djd-bar djd-bar--blue" style="height: 32%;"></div>
+                    <div class="djd-bar djd-bar--red" style="height: 16%;"></div>
+                    <span class="djd-bar-label">Ene</span>
+                </div>
+                <div class="djd-bar-group">
+                    <div class="djd-bar djd-bar--blue" style="height: 40%;"></div>
+                    <div class="djd-bar djd-bar--red" style="height: 20%;"></div>
+                    <span class="djd-bar-label">Feb</span>
+                </div>
+                <div class="djd-bar-group">
+                    <div class="djd-bar djd-bar--blue" style="height: 48%;"></div>
+                    <div class="djd-bar djd-bar--red" style="height: 24%;"></div>
+                    <span class="djd-bar-label">Mar</span>
+                </div>
+                <div class="djd-bar-group">
+                    <div class="djd-bar djd-bar--blue" style="height: 56%;"></div>
+                    <div class="djd-bar djd-bar--red" style="height: 32%;"></div>
+                    <span class="djd-bar-label">Abr</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="djd-panel">
+            <h3 class="djd-panel-title">
+                <span class="material-symbols-outlined" style="color:#3b82f6;">filter_alt</span>
+                Progreso Mensual
+            </h3>
+
+            <div class="djd-progress-item">
+                <div class="djd-progress-row">
+                    <span>Pensiones Pagadas</span>
+                    <span style="color:#2563eb;">80%</span>
+                </div>
+                <div class="djd-progress-track">
+                    <div class="djd-progress-fill" style="width: 80%; background:#3b82f6;"></div>
+                </div>
+            </div>
+
+            <div class="djd-progress-item">
+                <div class="djd-progress-row">
+                    <span>Asistencia Promedio</span>
+                    <span style="color:#16a34a;">92%</span>
+                </div>
+                <div class="djd-progress-track">
+                    <div class="djd-progress-fill" style="width: 92%; background:#22c55e;"></div>
+                </div>
+            </div>
+
+            <div class="djd-progress-item">
+                <div class="djd-progress-row">
+                    <span>Capacidad del Dojang</span>
+                    <span style="color:#ea580c;">65%</span>
+                </div>
+                <div class="djd-progress-track">
+                    <div class="djd-progress-fill" style="width: 65%; background:#f97316;"></div>
+                </div>
+            </div>
+
+            <div class="djd-cta">
+                <a href="/admin/billing/payment/" class="djd-cta-btn">Ver Pensiones Pendientes</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

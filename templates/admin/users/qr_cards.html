@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carnets QR - Dojang Segma</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+            margin: 0; padding: 1.5rem; background: #f1f5f9; color: #0f172a;
+        }
+        .toolbar {
+            max-width: 1000px; margin: 0 auto 1.25rem; display: flex;
+            align-items: center; justify-content: space-between; gap: 1rem;
+        }
+        .toolbar h1 { font-size: 1.2rem; margin: 0; }
+        .toolbar button {
+            border: none; background: #2563eb; color: #fff; font-weight: 700;
+            padding: .6rem 1.2rem; border-radius: .6rem; cursor: pointer; font-size: .95rem;
+        }
+        .toolbar button:hover { background: #1d4ed8; }
+        .grid {
+            max-width: 1000px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem;
+        }
+        .card {
+            background: #fff; border: 1px solid #e2e8f0; border-radius: .75rem;
+            padding: 1rem; text-align: center; break-inside: avoid;
+        }
+        .card .qr { display: flex; justify-content: center; }
+        .card .qr svg { width: 160px; height: 160px; }
+        .card .name { font-weight: 700; margin-top: .6rem; font-size: .95rem; }
+        .card .username { color: #64748b; font-size: .8rem; font-family: monospace; }
+        .card .brand { margin-top: .35rem; font-size: .7rem; letter-spacing: .05em; color: #2563eb; text-transform: uppercase; font-weight: 700; }
+        .empty { max-width: 1000px; margin: 0 auto; color: #64748b; }
+        .toolbar .actions { display: flex; gap: .6rem; }
+        .toolbar .ghost { background: #eff6ff; color: #2563eb; }
+        .creds {
+            max-width: 1000px; margin: 0 auto 1.25rem; background: #dcfce7; border: 1px solid #86efac;
+            border-radius: .75rem; padding: 1rem 1.25rem; color: #166534;
+        }
+        .creds h2 { margin: 0 0 .4rem; font-size: 1rem; }
+        .creds .pair { font-size: 1.05rem; }
+        .creds code { background: #fff; border: 1px solid #bbf7d0; border-radius: .4rem; padding: .1rem .5rem; font-size: 1.1rem; font-weight: 700; }
+        .creds small { display: block; margin-top: .5rem; opacity: .8; }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .toolbar, .creds { display: none; }
+            .grid { max-width: none; gap: .5rem; }
+            .card { border-color: #cbd5e1; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar">
+        <h1>Carnets QR — {{ cards|length }} alumno{{ cards|length|pluralize }}</h1>
+        <div class="actions">
+            {% if back_url %}<button type="button" class="ghost" onclick="window.location.href='{{ back_url }}'">Volver</button>{% endif %}
+            <button type="button" onclick="window.print()">Imprimir</button>
+        </div>
+    </div>
+
+    {% if credentials %}
+        <div class="creds">
+            <h2>✔ Credenciales del portal móvil</h2>
+            <div class="pair">Usuario: <code>{{ credentials.username }}</code> &nbsp; Contraseña: <code>{{ credentials.password }}</code></div>
+            <small>Anota estos datos y compártelos con el {{ credentials.role_label|default:"usuario" }}. La contraseña no se volverá a mostrar.</small>
+        </div>
+    {% endif %}
+
+    {% if cards %}
+        <div class="grid">
+            {% for card in cards %}
+                <div class="card">
+                    <div class="qr">{{ card.svg }}</div>
+                    <div class="name">{{ card.name }}</div>
+                    <div class="username">{{ card.username }}</div>
+                    <div class="brand">Dojang Segma</div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty">No se seleccionaron alumnos con código QR. Selecciona alumnos (rol Alumno) e intenta de nuevo.</p>
+    {% endif %}
+
+    <script>
+        if (document.querySelector('.card')) {
+            window.addEventListener('load', function () { setTimeout(function () { window.print(); }, 400); });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+/* Dojang Taekwondo Segma - Modern Redesign (Light Blue) */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif !important;
+    background-color: #f8fafc !important; /* Very light cool gray */
+    color: #1e293b !important;
+}
+
+/* Base UI Adjustments */
+.wrapper, .content-wrapper {
+    background-color: transparent !important;
+}
+
+/* Modern Typography */
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+    font-weight: 700 !important;
+    color: #0f172a !important;
+    letter-spacing: -0.025em;
+}
+
+/* Modern Navbar */
+.main-header {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(12px) !important;
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05) !important;
+}
+.main-header .nav-link {
+    color: #475569 !important;
+    font-weight: 500;
+}
+.main-header .nav-link:hover {
+    color: #0ea5e9 !important; /* Light Blue */
+}
+
+/* Modern Sidebar */
+.main-sidebar {
+    background: #ffffff !important;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.03) !important;
+    border-right: 1px solid #e2e8f0;
+}
+.brand-link {
+    background: transparent !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #0f172a !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.5px;
+    padding: 1.25rem 1rem !important;
+}
+.brand-link .brand-text {
+    background: linear-gradient(135deg, #0284c7, #38bdf8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Sidebar Links */
+.nav-sidebar .nav-item > .nav-link {
+    border-radius: 10px !important;
+    margin: 4px 12px !important;
+    color: #475569 !important;
+    font-weight: 500 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.nav-sidebar .nav-item > .nav-link:hover {
+    background-color: #f0f9ff !important;
+    color: #0284c7 !important;
+    transform: translateX(4px);
+}
+.nav-sidebar .nav-item > .nav-link.active {
+    background: linear-gradient(135deg, #0ea5e9, #38bdf8) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 10px rgba(14, 165, 233, 0.3) !important;
+}
+.nav-sidebar .nav-icon {
+    font-size: 1.1rem !important;
+    transition: transform 0.3s ease;
+}
+.nav-sidebar .nav-item > .nav-link:hover .nav-icon {
+    transform: scale(1.15);
+}
+
+/* Dashboard Cards (Small Boxes) */
+.small-box {
+    border-radius: 16px !important;
+    overflow: hidden;
+    background: #ffffff !important;
+    border: 1px solid #e2e8f0 !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.04), 0 4px 6px -2px rgba(0, 0, 0, 0.02) !important;
+    transition: all 0.3s ease !important;
+    color: #1e293b !important;
+}
+.small-box:hover {
+    transform: translateY(-5px) !important;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.08), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+    border-color: #38bdf8 !important;
+}
+.small-box .inner {
+    padding: 24px !important;
+}
+.small-box h3 {
+    font-size: 2.2rem !important;
+    font-weight: 800 !important;
+    color: #0284c7 !important;
+}
+.small-box p {
+    font-size: 1.1rem !important;
+    font-weight: 600 !important;
+    color: #64748b !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.small-box .icon {
+    color: rgba(14, 165, 233, 0.15) !important;
+    z-index: 0 !important;
+    transition: all 0.3s ease;
+}
+.small-box:hover .icon {
+    color: rgba(14, 165, 233, 0.25) !important;
+    transform: scale(1.1) rotate(5deg);
+}
+.small-box .small-box-footer {
+    background: #f8fafc !important;
+    color: #0284c7 !important;
+    font-weight: 600 !important;
+    padding: 10px !important;
+    border-top: 1px solid #f1f5f9;
+}
+.small-box .small-box-footer:hover {
+    background: #f0f9ff !important;
+    color: #0369a1 !important;
+}
+
+/* Modern Cards */
+.card {
+    border-radius: 16px !important;
+    border: 1px solid rgba(226, 232, 240, 0.8) !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03) !important;
+    background: #ffffff !important;
+    transition: box-shadow 0.3s ease;
+}
+.card:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.04) !important;
+}
+.card-header {
+    background: transparent !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    padding: 1.25rem 1.5rem !important;
+}
+.card-title {
+    font-weight: 700 !important;
+    color: #0f172a !important;
+}
+.card-body {
+    padding: 1.5rem !important;
+}
+
+/* Inputs & Form Elements */
+.form-control, .select2-container .select2-selection--single {
+    border-radius: 10px !important;
+    border: 2px solid #e2e8f0 !important;
+    padding: 0.6rem 1rem !important;
+    height: auto !important;
+    font-size: 0.95rem !important;
+    color: #1e293b !important;
+    background-color: #f8fafc !important;
+    transition: all 0.2s ease !important;
+}
+.form-control:focus, .select2-container--open .select2-selection--single {
+    border-color: #38bdf8 !important;
+    background-color: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15) !important;
+}
+
+/* Modern Buttons - Light Blue Palette */
+.btn {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    padding: 0.5rem 1.25rem !important;
+    letter-spacing: 0.3px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+}
+.btn-info, .btn-primary { /* Mapping Jazzmin's primary to our custom Light Blue */
+    background: linear-gradient(135deg, #0ea5e9, #38bdf8) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3) !important;
+}
+.btn-info:hover, .btn-primary:hover {
+    background: linear-gradient(135deg, #0284c7, #0ea5e9) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(14, 165, 233, 0.4) !important;
+}
+.btn-success {
+    background: linear-gradient(135deg, #10b981, #34d399) !important;
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3) !important;
+}
+.btn-success:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4) !important;
+}
+.btn-danger {
+    background: linear-gradient(135deg, #ef4444, #f87171) !important;
+    box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.3) !important;
+}
+.btn-danger:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Tables */
+.table {
+    border-collapse: separate;
+    border-spacing: 0;
+}
+.table thead th {
+    background-color: #f8fafc !important;
+    color: #475569 !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #e2e8f0 !important;
+    border-top: none !important;
+    padding: 1rem !important;
+}
+.table tbody td {
+    padding: 1rem !important;
+    vertical-align: middle !important;
+    border-bottom: 1px solid #f1f5f9 !important;
+    color: #1e293b !important;
+    font-weight: 500;
+}
+.table tbody tr:hover td {
+    background-color: #f0f9ff !important;
+}
+
+/* Login Page Overrides */
+.login-page {
+    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%) !important;
+}
+.login-box .card {
+    border-radius: 24px !important;
+    box-shadow: 0 25px 50px -12px rgba(14, 165, 233, 0.25) !important;
+    border: 1px solid rgba(255, 255, 255, 0.6) !important;
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+}
+.login-box .card-header {
+    border-bottom: none !important;
+    padding: 2.5rem 2rem 1rem !important;
+}
+.login-box .btn-primary {
+    padding: 0.8rem !important;
+    font-size: 1.1rem !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #0ea5e9, #38bdf8) !important;
+}
+
+/* Breadcrumbs */
+.breadcrumb {
+    background: transparent !important;
+    padding: 0 !important;
+}
+.breadcrumb-item a {
+    color: #0ea5e9 !important;
+    font-weight: 600;
+}
+
+/* Pagination */
+.pagination .page-item .page-link {
+    border-radius: 8px !important;
+    margin: 0 3px;
+    border: none;
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 600;
+}
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #0ea5e9, #38bdf8) !important;
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(14, 165, 233, 0.3);
+}
+
+/* Badges / Chips */
+.badge {
+    padding: 0.5em 0.8em !important;
+    border-radius: 6px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.3px;
+}
