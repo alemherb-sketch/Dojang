@@ -14,7 +14,7 @@ from unfold.decorators import action
 
 from backend.admin_mixins import RowActionsMixin
 from .credentials import build_username, generate_password
-from .models import Parent, Student, User, generate_qr_token
+from .models import Parent, Student, User, generate_qr_token, Instructor
 from .qr import qr_svg
 
 
@@ -203,6 +203,61 @@ class ParentAdmin(CredentialAdmin):
             messages.success(
                 request,
                 f'Apoderado creado. Credenciales del portal — Usuario: {creds["username"]}  |  '
+                f'Contraseña: {creds["password"]}  (anótala, no se volverá a mostrar).',
+            )
+        return super().response_add(request, obj, post_url_continue)
+
+
+class InstructorForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(render_value=True), required=False, label="Contraseña", help_text="Déjelo en blanco para auto-generar.")
+
+    class Meta:
+        model = Instructor
+        fields = ('username', 'password', 'first_name', 'last_name', 'email', 'dni', 'phone_number', 'address')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'username' in self.fields:
+            self.fields['username'].required = False
+
+
+@admin.register(Instructor)
+class InstructorAdmin(CredentialAdmin):
+    role_value = 'INSTRUCTOR'
+    username_fallback = 'profesor'
+    credential_role_label = 'instructor'
+    form = InstructorForm
+    actions = ('reset_password',)
+    list_display = ('username', 'first_name', 'last_name', 'dni', 'phone_number')
+    search_fields = ('username', 'first_name', 'last_name', 'email', 'dni', 'phone_number')
+
+    def get_fieldsets(self, request, obj=None):
+        if obj is None:
+            return (
+                ('Credenciales de Acceso', {
+                    'fields': ('username', 'password'),
+                    'description': 'Puede escribir las credenciales o dejar los campos en blanco para que el sistema las genere automáticamente.',
+                }),
+                ('Información Personal', {
+                    'fields': ('first_name', 'last_name', 'email', 'dni', 'phone_number', 'address'),
+                }),
+            )
+        return (
+            ('Acceso al portal', {'fields': ('username', 'portal_password')}),
+            ('Información Personal', {
+                'fields': ('first_name', 'last_name', 'email', 'dni', 'phone_number', 'address'),
+            }),
+        )
+
+    def get_readonly_fields(self, request, obj=None):
+        return ('username', 'portal_password') if obj else ()
+
+    def response_add(self, request, obj, post_url_continue=None):
+        creds = self._credentials_context(obj)
+        if creds:
+            messages.success(
+                request,
+                f'Instructor creado. Credenciales del portal — Usuario: {creds["username"]}  |  '
                 f'Contraseña: {creds["password"]}  (anótala, no se volverá a mostrar).',
             )
         return super().response_add(request, obj, post_url_continue)

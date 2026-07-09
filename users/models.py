@@ -75,3 +75,22 @@ class Parent(User):
         if not self.pk:
             self.role = 'PARENT'
         super().save(*args, **kwargs)
+
+
+class InstructorManager(UserManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(role='INSTRUCTOR')
+
+
+class Instructor(User):
+    objects = InstructorManager()
+
+    class Meta:
+        proxy = True
+        verbose_name = 'Instructor'
+        verbose_name_plural = 'Instructores'
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.role = 'INSTRUCTOR'
+        super().save(*args, **kwargs)
