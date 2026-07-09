@@ -27,7 +27,10 @@ def get_concept_price(request, concept_id):
     except Concept.DoesNotExist:
         return JsonResponse({'price': ''}, status=404)
 
+from django.views.generic import RedirectView
+
 urlpatterns = [
+    path('', RedirectView.as_view(url='/admin/', permanent=False)),
     path('admin/', admin.site.urls),
     path('asistencia/', include('attendance.urls')),
     path('api/', include('api.urls')),
