@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprobante de Venta #{{ sale.id }}</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 0; padding: 20px; color: #333; background: #f9f9f9; }
+        .receipt-container { max-width: 600px; margin: 0 auto; background: #fff; padding: 40px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-radius: 8px; }
+        .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #2563eb; padding-bottom: 20px; }
+        .header h1 { margin: 0 0 10px; color: #1e293b; font-size: 24px; text-transform: uppercase; letter-spacing: 1px; }
+        .header p { margin: 0; color: #64748b; font-size: 14px; }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 15px; font-size: 14px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px; }
+        .info-label { font-weight: bold; color: #475569; }
+        .info-value { color: #0f172a; font-weight: 500; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; margin-bottom: 20px; }
+        th, td { padding: 12px 0; text-align: left; font-size: 14px; border-bottom: 1px solid #e2e8f0; }
+        th { font-weight: bold; color: #475569; border-bottom: 2px solid #cbd5e1; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .total-row { font-size: 18px; font-weight: bold; color: #1e293b; border-top: 2px solid #2563eb; }
+        .total-row td { padding-top: 15px; border-bottom: none; }
+        .footer { text-align: center; margin-top: 40px; color: #64748b; font-size: 13px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+        .btn-print { display: block; width: 100%; max-width: 200px; margin: 30px auto 0; padding: 12px 20px; background: #2563eb; color: #fff; text-align: center; text-decoration: none; border-radius: 6px; font-weight: bold; border: none; cursor: pointer; transition: background 0.3s; }
+        .btn-print:hover { background: #1d4ed8; }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .receipt-container { box-shadow: none; padding: 20px 0; }
+            .btn-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="receipt-container">
+    <div class="header">
+        <h1>Dojang Taekwondo Segma</h1>
+        <p>Comprobante de Venta</p>
+    </div>
+
+    <div class="info-row">
+        <span class="info-label">Nro. Venta:</span>
+        <span class="info-value">#{{ sale.id|stringformat:"05d" }}</span>
+    </div>
+    
+    <div class="info-row">
+        <span class="info-label">Fecha:</span>
+        <span class="info-value">{{ sale.date|date:"d M Y, h:i A" }}</span>
+    </div>
+
+    <div class="info-row">
+        <span class="info-label">Comprador:</span>
+        <span class="info-value">{{ sale.buyer.get_full_name|default:sale.buyer.username|default:"Cliente" }}</span>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Producto</th>
+                <th class="text-center">Cant.</th>
+                <th class="text-right">Precio Unit.</th>
+                <th class="text-right">Subtotal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in sale.items.all %}
+            <tr>
+                <td>{{ item.product.name|default:"Producto Eliminado" }}</td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-right">S/ {{ item.price_at_sale }}</td>
+                <td class="text-right">S/ {{ item.subtotal }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" class="text-center" style="color:#94a3b8;">No hay productos registrados</td>
+            </tr>
+            {% endfor %}
+            <tr class="total-row">
+                <td colspan="3" class="text-right">TOTAL</td>
+                <td class="text-right">S/ {{ sale.total }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer">
+        <p>Gracias por su compra.</p>
+        <p>Este es un comprobante interno del sistema.</p>
+    </div>
+
+    <button class="btn-print" onclick="window.print()">
+        Imprimir Comprobante
+    </button>
+</div>
+
+</body>
+</html>

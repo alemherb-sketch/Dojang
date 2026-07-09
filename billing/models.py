@@ -41,6 +41,10 @@ class SaleItem(models.Model):
     def __str__(self):
         return f"{self.quantity} x {self.product.name if self.product else 'Eliminado'}"
 
+    @property
+    def subtotal(self):
+        return self.quantity * self.price_at_sale
+
 MONTH_CHOICES = [
     ('01', 'Enero'), ('02', 'Febrero'), ('03', 'Marzo'),
     ('04', 'Abril'), ('05', 'Mayo'), ('06', 'Junio'),

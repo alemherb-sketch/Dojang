@@ -14,13 +14,35 @@ class SaleItemInline(TabularInline):
 
 @admin.register(Sale)
 class SaleAdmin(RowActionsMixin, ModelAdmin):
-    list_display = ('id', 'date', 'buyer', 'total')
+    list_display = ('id', 'date', 'buyer', 'total', 'print_button')
     list_filter = ('date',)
     inlines = [SaleItemInline]
     search_fields = ('buyer__username',)
 
     class Media:
         js = ('js/sale_price.js',)
+
+    def print_button(self, obj):
+        if obj.id:
+            from django.urls import reverse
+            from django.utils.html import format_html
+            url = reverse('admin:billing_sale_receipt', args=[obj.id])
+            return format_html('<a href="{}" target="_blank" style="color: #2563eb; font-weight: 600;"><span class="material-symbols-outlined" style="font-size: 20px; vertical-align: middle;">print</span> Imprimir</a>', url)
+        return ""
+    print_button.short_description = "Recibo"
+
+    def get_urls(self):
+        urls = super().get_urls()
+        from django.urls import path
+        custom_urls = [
+            path('<int:sale_id>/receipt/', self.admin_site.admin_view(self.receipt_view), name='billing_sale_receipt'),
+        ]
+        return custom_urls + urls
+
+    def receipt_view(self, request, sale_id):
+        from django.shortcuts import get_object_or_404, render
+        sale = get_object_or_404(Sale, id=sale_id)
+        return render(request, 'admin/billing/sale_receipt.html', {'sale': sale})
 
 @admin.register(Concept)
 class ConceptAdmin(RowActionsMixin, ModelAdmin):
