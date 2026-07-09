@@ -1,0 +1,15 @@
+# Railway/Nixpacks config for the Vite PWA frontend.
+# In the Railway service, set Root Directory = "frontend" so this file is used.
+
+[variables]
+# Install devDependencies too (vite, tailwind, axios, react-router are needed
+# to build); Railway may otherwise set production mode and skip them.
+NPM_CONFIG_PRODUCTION = "false"
+CI = "false"
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+# Serve the built SPA; -s rewrites all routes to index.html for React Router.
+cmd = "npx serve -s dist -l $PORT"
