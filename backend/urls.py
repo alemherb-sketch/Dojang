@@ -39,6 +39,8 @@ urlpatterns = [
     path('asistencia/', include('attendance.urls')),
     path('api/', include('api.urls')),
     path('api/concept-price/<int:concept_id>/', get_concept_price, name='get_concept_price'),
+]
+
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
