@@ -1,9 +1,13 @@
 document.addEventListener('DOMContentLoaded', function() {
     function calculateTotal() {
         let total = 0;
-        const rows = document.querySelectorAll('.inline-related.has_original, .inline-related:not(.empty-form)');
-        rows.forEach(row => {
-            const qtyInput = row.querySelector('input[name$="-quantity"]');
+        const qtyInputs = document.querySelectorAll('input[name$="-quantity"]');
+        qtyInputs.forEach(qtyInput => {
+            if (qtyInput.name.includes('__prefix__')) return; // skip template
+            
+            const row = qtyInput.closest('tr') || qtyInput.closest('div.border') || qtyInput.closest('div.group') || qtyInput.parentElement.parentElement;
+            if (!row) return;
+
             const priceInput = row.querySelector('input[name$="-price_at_sale"]');
             const deleteInput = row.querySelector('input[name$="-DELETE"]');
             
