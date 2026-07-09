@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
         const totalInput = document.querySelector('input[name="total"]');
         if (totalInput) {
             totalInput.value = total.toFixed(2);
+            // dispatch input event so frameworks notice
+            totalInput.dispatchEvent(new Event('input', { bubbles: true }));
+            totalInput.dispatchEvent(new Event('change', { bubbles: true }));
         } else {
             const totalReadonly = document.querySelector('.field-total .readonly') || document.querySelector('.field-total');
             if (totalReadonly) {
@@ -47,11 +50,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     .then(data => {
                         if (data.price !== undefined && data.price !== '') {
                             priceInput.value = data.price;
+                            priceInput.dispatchEvent(new Event('input', { bubbles: true }));
+                            priceInput.dispatchEvent(new Event('change', { bubbles: true }));
                             calculateTotal();
                         }
                     });
             } else if (!productId && priceInput) {
                 priceInput.value = '';
+                priceInput.dispatchEvent(new Event('input', { bubbles: true }));
+                priceInput.dispatchEvent(new Event('change', { bubbles: true }));
                 calculateTotal();
             }
         }
