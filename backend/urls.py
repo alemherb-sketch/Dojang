@@ -30,6 +30,9 @@ def get_concept_price(request, concept_id):
         return JsonResponse({'price': ''}, status=404)
 
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
     path('admin/', admin.site.urls),
@@ -37,6 +40,9 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('api/concept-price/<int:concept_id>/', get_concept_price, name='get_concept_price'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 admin.site.site_header = "Dojang Taekwondo Segma"
 admin.site.site_title = "Portal Administrativo"

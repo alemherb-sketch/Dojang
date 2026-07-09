@@ -143,6 +143,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+MEDIA_URL = 'media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
 # Django 6.0 uses STORAGES (the old STATICFILES_STORAGE setting is ignored).
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},

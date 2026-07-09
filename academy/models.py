@@ -16,6 +16,7 @@ class Grade(models.Model):
 class Activity(models.Model):
     title = models.CharField('Título', max_length=200, help_text="Título del anuncio o actividad")
     content = models.TextField('Contenido', help_text="Detalle de la actividad")
+    image = models.ImageField('Imagen', upload_to='activities/', blank=True, null=True, help_text="Opcional. Imagen representativa de la actividad")
     date_posted = models.DateTimeField('Fecha de Publicación', auto_now_add=True)
     is_active = models.BooleanField('Activo', default=True)
 
