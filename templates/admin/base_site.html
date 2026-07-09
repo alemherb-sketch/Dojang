@@ -62,12 +62,47 @@
         color: #cbd5e1 !important;
     }
 
-    /* Fix transparent background on the user dropdown menu */
+    /* Fix transparent background and invisible text on the user dropdown menu */
     #nav-sidebar nav.z-50, #nav-sidebar-inner nav.z-50 {
         background-color: #ffffff !important;
+        color: #1e293b !important;
     }
+    #nav-sidebar nav.z-50 a,
+    #nav-sidebar nav.z-50 .material-symbols-outlined:not(.text-red-700) {
+        color: #1e293b !important;
+    }
+    #nav-sidebar nav.z-50 a:hover {
+        background-color: #f1f5f9 !important;
+        color: #0f172a !important;
+    }
+    #nav-sidebar nav.z-50 button[type="submit"],
+    #nav-sidebar nav.z-50 button[type="submit"] .material-symbols-outlined {
+        color: #b91c1c !important;
+    }
+    #nav-sidebar nav.z-50 button[type="submit"]:hover {
+        background-color: #fee2e2 !important;
+    }
+
+    /* Dark mode overrides for dropdown */
     html.dark #nav-sidebar nav.z-50, html.dark #nav-sidebar-inner nav.z-50 {
         background-color: #1e293b !important;
+        color: #e2e8f0 !important;
+        border: 1px solid #334155 !important;
+    }
+    html.dark #nav-sidebar nav.z-50 a,
+    html.dark #nav-sidebar nav.z-50 .material-symbols-outlined:not(.text-red-400) {
+        color: #e2e8f0 !important;
+    }
+    html.dark #nav-sidebar nav.z-50 a:hover {
+        background-color: #334155 !important;
+        color: #ffffff !important;
+    }
+    html.dark #nav-sidebar nav.z-50 button[type="submit"],
+    html.dark #nav-sidebar nav.z-50 button[type="submit"] .material-symbols-outlined {
+        color: #f87171 !important;
+    }
+    html.dark #nav-sidebar nav.z-50 button[type="submit"]:hover {
+        background-color: rgba(239, 68, 68, 0.2) !important;
     }
 
     /* User footer block + "All applications" link hover state */
