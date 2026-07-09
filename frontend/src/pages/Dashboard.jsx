@@ -15,22 +15,33 @@ export default function Dashboard() {
     if (!token) { navigate('/'); return; }
 
     const fetchData = async () => {
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      
       try {
-        const config = { headers: { Authorization: `Bearer ${token}` } };
         const userRes = await api.get('/api/profile/', config);
         setProfile(userRes.data);
         if (userRes.data.role !== 'STUDENT' && activeTab === 'qr') {
           setActiveTab('activities');
         }
-        
+      } catch (err) {
+        // If profile fails (e.g. token expired), we must logout
+        localStorage.removeItem('token');
+        navigate('/');
+        return;
+      }
+      
+      try {
         const actRes = await api.get('/api/activities/', config);
         setActivities(actRes.data);
-        
+      } catch (err) {
+        console.error("Activities error:", err);
+      }
+      
+      try {
         const attRes = await api.get('/api/dashboard/attendance/', config);
         setAttendances(attRes.data);
       } catch (err) {
-        localStorage.removeItem('token');
-        navigate('/');
+        console.error("Attendance error:", err);
       }
     };
     fetchData();
