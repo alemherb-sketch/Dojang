@@ -39,32 +39,8 @@ urlpatterns = [
     path('asistencia/', include('attendance.urls')),
     path('api/', include('api.urls')),
     path('api/concept-price/<int:concept_id>/', get_concept_price, name='get_concept_price'),
-]
-
-import traceback
-from django.http import HttpResponse
-import subprocess
-
-def debug_view(request):
-    try:
-        from academy.models import Activity
-        list(Activity.objects.all())
-        output = "Activity query succeeded.\\n"
-    except Exception as e:
-        output = "Activity query failed:\\n" + traceback.format_exc() + "\\n"
-    
-    try:
-        migrate_out = subprocess.check_output(['python', 'manage.py', 'migrate'], stderr=subprocess.STDOUT)
-        output += "\\nMigrate output:\\n" + migrate_out.decode('utf-8')
-    except subprocess.CalledProcessError as e:
-        output += "\\nMigrate failed:\\n" + e.output.decode('utf-8')
-        
-    return HttpResponse(f"<pre>{output}</pre>")
-
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-urlpatterns += [path('debug/', debug_view)]
 
 admin.site.site_header = "Dojang Taekwondo Segma"
 admin.site.site_title = "Portal Administrativo"
