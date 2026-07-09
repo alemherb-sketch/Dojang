@@ -21,6 +21,11 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 class AttendanceSerializer(serializers.ModelSerializer):
     section_name = serializers.CharField(source='section.name', read_only=True)
+    student_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Attendance
-        fields = ('id', 'date', 'time', 'status', 'section_name')
+        fields = ('id', 'date', 'time', 'status', 'section_name', 'student_name')
+        
+    def get_student_name(self, obj):
+        return f"{obj.student.first_name} {obj.student.last_name}".strip() or obj.student.username

@@ -29,5 +29,9 @@ class StudentDashboardViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['get'])
     def attendance(self, request):
-        attendances = Attendance.objects.filter(student=request.user).order_by('-date', '-time')[:10]
+        user = request.user
+        if user.role == 'PARENT':
+            attendances = Attendance.objects.filter(student__parent=user).order_by('-date', '-time')[:30]
+        else:
+            attendances = Attendance.objects.filter(student=user).order_by('-date', '-time')[:30]
         return Response(AttendanceSerializer(attendances, many=True).data)

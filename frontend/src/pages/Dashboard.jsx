@@ -6,6 +6,7 @@ import QRCode from 'react-qr-code';
 export default function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [activities, setActivities] = useState([]);
+  const [attendances, setAttendances] = useState([]);
   const [activeTab, setActiveTab] = useState('qr');
   const navigate = useNavigate();
 
@@ -18,8 +19,15 @@ export default function Dashboard() {
         const config = { headers: { Authorization: `Bearer ${token}` } };
         const userRes = await api.get('/api/profile/', config);
         setProfile(userRes.data);
+        if (userRes.data.role !== 'STUDENT' && activeTab === 'qr') {
+          setActiveTab('activities');
+        }
+        
         const actRes = await api.get('/api/activities/', config);
         setActivities(actRes.data);
+        
+        const attRes = await api.get('/api/dashboard/attendance/', config);
+        setAttendances(attRes.data);
       } catch (err) {
         localStorage.removeItem('token');
         navigate('/');
@@ -84,25 +92,24 @@ export default function Dashboard() {
         </div>
 
         {/* Tab Navigation */}
-        {profile.role === 'STUDENT' && (
-          <div style={styles.tabBar}>
-            {[
-              { id: 'qr', label: '📱 Mi QR', },
-              { id: 'activities', label: '📢 Actividades', },
-            ].map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                style={{
-                  ...styles.tabBtn,
-                  ...(activeTab === tab.id ? styles.tabBtnActive : {}),
-                }}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-        )}
+        <div style={styles.tabBar}>
+          {[
+            ...(profile.role === 'STUDENT' ? [{ id: 'qr', label: '📱 Mi QR' }] : []),
+            { id: 'activities', label: '📢 Actividades' },
+            { id: 'attendance', label: '✅ Asistencias' },
+          ].map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                ...styles.tabBtn,
+                ...(activeTab === tab.id ? styles.tabBtnActive : {}),
+              }}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
         {/* QR Section */}
         {activeTab === 'qr' && profile.role === 'STUDENT' && (
@@ -126,7 +133,7 @@ export default function Dashboard() {
         )}
 
         {/* Activities Section */}
-        {(activeTab === 'activities' || profile.role !== 'STUDENT') && (
+        {activeTab === 'activities' && (
           <div style={styles.card}>
             <h3 style={styles.cardTitle}>📢 Tablón de Actividades</h3>
             <div style={styles.activitiesList}>
@@ -149,6 +156,40 @@ export default function Dashboard() {
                 <div style={styles.emptyState}>
                   <span style={{ fontSize: '48px' }}>📋</span>
                   <p style={styles.emptyText}>No hay actividades recientes</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Attendance Section */}
+        {activeTab === 'attendance' && (
+          <div style={styles.card}>
+            <h3 style={styles.cardTitle}>✅ Registro de Asistencias</h3>
+            <div style={styles.activitiesList}>
+              {attendances.length > 0 ? (
+                attendances.map(att => (
+                  <div key={att.id} style={styles.activityItem}>
+                    <div style={{ ...styles.activityAccent, background: 'linear-gradient(180deg, #10b981, #059669)' }}></div>
+                    <div style={styles.activityContent}>
+                      <h4 style={styles.activityTitle}>{att.student_name}</h4>
+                      <p style={styles.activityDate}>
+                        {new Date(`${att.date}T${att.time}`).toLocaleString('es-PE', {
+                          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                        })}
+                      </p>
+                      <p style={styles.activityText}>
+                        Estado: <strong style={{color: att.status === 'P' ? '#10b981' : (att.status === 'L' ? '#f59e0b' : '#ef4444')}}>
+                          {att.status === 'P' ? 'Presente' : (att.status === 'L' ? 'Tarde' : 'Ausente')}
+                        </strong> | Grupo: {att.section_name}
+                      </p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div style={styles.emptyState}>
+                  <span style={{ fontSize: '48px' }}>📅</span>
+                  <p style={styles.emptyText}>No hay asistencias recientes</p>
                 </div>
               )}
             </div>
