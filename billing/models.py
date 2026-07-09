@@ -45,6 +45,20 @@ class SaleItem(models.Model):
     def subtotal(self):
         return self.quantity * self.price_at_sale
 
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+from django.db.models import Sum, F
+
+@receiver([post_save, post_delete], sender=SaleItem)
+def update_sale_total(sender, instance, **kwargs):
+    sale = instance.sale
+    if sale:
+        # Calculate total
+        total = sum(item.quantity * item.price_at_sale for item in sale.items.all() if item.price_at_sale)
+        if sale.total != total:
+            sale.total = total
+            sale.save(update_fields=['total'])
+
 MONTH_CHOICES = [
     ('01', 'Enero'), ('02', 'Febrero'), ('03', 'Marzo'),
     ('04', 'Abril'), ('05', 'Mayo'), ('06', 'Junio'),
