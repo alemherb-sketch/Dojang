@@ -28,6 +28,11 @@ class RowActionsMixin:
             list_display.append("acciones")
         return list_display
 
+    def has_change_permission(self, request, obj=None):
+        if request.GET.get("view") == "1":
+            return False
+        return super().has_change_permission(request, obj)
+
     @admin.display(description=_("Acciones"))
     def acciones(self, obj):
         meta = obj._meta
@@ -39,7 +44,7 @@ class RowActionsMixin:
             )
             parts.append(
                 format_html(
-                    '<a href="{}" class="djd-row-action djd-row-action--view" '
+                    '<a href="{}?view=1" class="djd-row-action djd-row-action--view" '
                     'title="{}"><span class="material-symbols-outlined">visibility</span></a>',
                     change_url,
                     _("Ver"),
