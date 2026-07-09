@@ -29,9 +29,6 @@ DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
-# Configuración de Whitenoise para archivos estáticos en producción
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-
 
 # Application definition
 
@@ -145,6 +142,14 @@ LOCALE_PATHS = [BASE_DIR / 'locale']
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# Django 6.0 uses STORAGES (the old STATICFILES_STORAGE setting is ignored).
+# WhiteNoise's non-manifest compressed storage serves collected static files in
+# production without the strict manifest lookups that previously caused 500s.
+STORAGES = {
+    "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
+    "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
+}
 
 CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
 
