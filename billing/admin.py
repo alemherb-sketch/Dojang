@@ -19,6 +19,9 @@ class SaleAdmin(RowActionsMixin, ModelAdmin):
     inlines = [SaleItemInline]
     search_fields = ('buyer__username',)
 
+    class Media:
+        js = ('js/sale_price.js',)
+
 @admin.register(Concept)
 class ConceptAdmin(RowActionsMixin, ModelAdmin):
     list_display = ('name', 'default_amount')

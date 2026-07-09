@@ -19,7 +19,7 @@ from django.urls import path, include
 
 from django.http import JsonResponse
 from django.views.generic import RedirectView
-from billing.models import Concept
+from billing.models import Concept, Product
 
 
 def get_concept_price(request, concept_id):
@@ -27,6 +27,14 @@ def get_concept_price(request, concept_id):
         concept = Concept.objects.get(id=concept_id)
         return JsonResponse({'price': str(concept.default_amount)})
     except Concept.DoesNotExist:
+        return JsonResponse({'price': ''}, status=404)
+
+
+def get_product_price(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+        return JsonResponse({'price': str(product.price)})
+    except Product.DoesNotExist:
         return JsonResponse({'price': ''}, status=404)
 
 
@@ -39,6 +47,7 @@ urlpatterns = [
     path('asistencia/', include('attendance.urls')),
     path('api/', include('api.urls')),
     path('api/concept-price/<int:concept_id>/', get_concept_price, name='get_concept_price'),
+    path('api/product-price/<int:product_id>/', get_product_price, name='get_product_price'),
 ]
 
 from django.urls import re_path
