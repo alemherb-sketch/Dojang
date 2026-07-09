@@ -215,6 +215,9 @@ class StudentForm(forms.ModelForm):
         model = Student
         fields = ('username', 'password', 'first_name', 'last_name', 'email', 'dni', 'birth_date',
                   'address', 'blood_type', 'phone_number', 'parent')
+        widgets = {
+            'birth_date': forms.DateInput(attrs={'type': 'date'}),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
