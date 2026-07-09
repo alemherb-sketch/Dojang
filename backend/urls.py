@@ -37,11 +37,30 @@ def health(request):
     from django.contrib.sessions.backends.db import SessionStore
 
     info = {
+        'marker': 'diag-static-2',
         'db_engine': settings.DATABASES['default'].get('ENGINE'),
         'db_name': str(settings.DATABASES['default'].get('NAME'))[:40],
         'DATABASE_URL_env_set': bool(os.environ.get('DATABASE_URL')),
         'DEBUG': settings.DEBUG,
     }
+    try:
+        static_root = str(settings.STATIC_ROOT)
+        n_files = 0
+        for _root, _dirs, files in os.walk(static_root):
+            n_files += len(files)
+            if n_files > 5000:
+                break
+        info['static_url'] = str(settings.STATIC_URL)
+        info['static_root'] = static_root[-50:]
+        info['static_root_exists'] = os.path.isdir(static_root)
+        info['static_files_count'] = n_files
+        info['styles_css_exists'] = os.path.exists(
+            os.path.join(static_root, 'unfold', 'css', 'styles.css'))
+        info['whitenoise_middleware'] = any(
+            'whitenoise' in m.lower() for m in settings.MIDDLEWARE)
+        info['staticfiles_backend'] = settings.STORAGES.get('staticfiles', {}).get('BACKEND')
+    except Exception as exc:
+        info['static_error'] = f'{type(exc).__name__}: {exc}'[:200]
     try:
         from users.models import User
         info['db_connect_ok'] = True
