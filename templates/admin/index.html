@@ -38,6 +38,26 @@
         pointer-events: none;
         line-height: 1;
     }
+    .djd-header-brand {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        align-items: center;
+        gap: 1.15rem;
+    }
+    .djd-header-logo {
+        width: 92px;
+        height: 92px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+        background: #ffffff;
+        border: 3px solid rgba(255, 255, 255, 0.9);
+        box-shadow: 0 10px 24px -8px rgba(0, 0, 0, 0.5);
+    }
+    @media (max-width: 560px) {
+        .djd-header-logo { width: 66px; height: 66px; }
+    }
     .djd-header-text { position: relative; z-index: 1; }
     .djd-header-title {
         display: flex;
@@ -318,12 +338,15 @@
 
     <div class="djd-header">
         <span class="material-symbols-outlined djd-header-icon-bg">dashboard</span>
-        <div class="djd-header-text">
-            <h1 class="djd-header-title">
-                <span class="material-symbols-outlined">speed</span>
-                Dashboard Estratégico
-            </h1>
-            <p class="djd-header-sub">Centro de control y toma de decisiones en tiempo real — Dojang Segma</p>
+        <div class="djd-header-brand">
+            <img src="{% static 'img/logo.jpg' %}" alt="Taekwondo Segma Huancayo" class="djd-header-logo">
+            <div class="djd-header-text">
+                <h1 class="djd-header-title">
+                    <span class="material-symbols-outlined">speed</span>
+                    Dashboard Estratégico
+                </h1>
+                <p class="djd-header-sub">Centro de control y toma de decisiones en tiempo real — Dojang Segma</p>
+            </div>
         </div>
         <div class="djd-header-date">
             <span class="material-symbols-outlined">calendar_today</span>
