@@ -21,6 +21,8 @@ class RowActionsMixin:
         class GradeAdmin(RowActionsMixin, ModelAdmin):
             ...
     """
+    
+    change_form_show_cancel_button = True
 
     def get_list_display(self, request):
         list_display = list(super().get_list_display(request))
