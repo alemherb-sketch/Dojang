@@ -223,6 +223,11 @@ UNFOLD = {
                         "link": reverse_lazy("admin:users_user_changelist"),
                     },
                     {
+                        "title": "Instructores",
+                        "icon": "sports",
+                        "link": reverse_lazy("admin:users_instructor_changelist"),
+                    },
+                    {
                         "title": "Alumnos",
                         "icon": "sports_martial_arts",
                         "link": reverse_lazy("admin:users_student_changelist"),
