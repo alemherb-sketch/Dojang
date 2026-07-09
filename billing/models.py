@@ -28,6 +28,10 @@ class Sale(models.Model):
     def __str__(self):
         return f"Venta #{self.id} - {self.date.strftime('%d/%m/%Y %H:%M')}"
 
+    @property
+    def calculated_total(self):
+        return sum((item.quantity * item.price_at_sale) for item in self.items.all() if item.price_at_sale)
+
 class SaleItem(models.Model):
     sale = models.ForeignKey(Sale, on_delete=models.CASCADE, related_name='items', verbose_name='Venta')
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name='Producto')

@@ -77,7 +77,7 @@
             {% endfor %}
             <tr class="total-row">
                 <td colspan="3" class="text-right">TOTAL</td>
-                <td class="text-right">S/ {{ sale.total }}</td>
+                <td class="text-right">S/ {{ sale.calculated_total|default:"0.00" }}</td>
             </tr>
         </tbody>
     </table>

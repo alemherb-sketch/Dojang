@@ -14,11 +14,16 @@ class SaleItemInline(TabularInline):
 
 @admin.register(Sale)
 class SaleAdmin(RowActionsMixin, ModelAdmin):
-    list_display = ('id', 'date', 'buyer', 'total', 'print_button')
+    list_display = ('id', 'date', 'buyer', 'get_total_display', 'print_button')
     list_filter = ('date',)
     inlines = [SaleItemInline]
     search_fields = ('buyer__username',)
-    readonly_fields = ('total',)
+    readonly_fields = ('get_total_display',)
+
+    def get_total_display(self, obj):
+        total = sum((item.quantity * item.price_at_sale) for item in obj.items.all() if item.price_at_sale)
+        return f"{total:.2f}"
+    get_total_display.short_description = 'Total (S/)'
 
     class Media:
         js = ('js/sale_price.js',)
