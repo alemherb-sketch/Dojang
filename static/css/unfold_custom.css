@@ -1,0 +1,61 @@
+/* =====================================================================
+   Dojang Segma — custom admin styles (loaded via UNFOLD["STYLES"]).
+   Everything here is scoped to the login page (body.login) so it does
+   NOT affect the rest of the admin.
+   ===================================================================== */
+
+/* Branded full-screen background behind the login card */
+body.login #page {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 45%, #0c1a3a 75%, #0f172a 100%) !important;
+}
+
+/* Turn the form column into a floating white card */
+body.login .w-full.sm\:w-96 {
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 38px 34px 34px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.45);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Thin gradient accent bar across the top of the card */
+body.login .w-full.sm\:w-96::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #ef4444, #f59e0b, #1e3a8a, #3b82f6);
+}
+
+/* Brand emblem above the heading */
+body.login .w-full.sm\:w-96::before {
+    content: "🥋";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    margin: 4px auto 22px;
+    font-size: 38px;
+    line-height: 1;
+    background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px -8px rgba(30, 58, 138, 0.55);
+}
+
+/* Center the title and drop its divider line */
+body.login .w-full.sm\:w-96 > .border-b {
+    border-bottom: 0 !important;
+    text-align: center;
+    margin-bottom: 1.6rem !important;
+    padding-bottom: 0 !important;
+}
+
+/* Dark theme card */
+:root[data-theme="dark"] body.login .w-full.sm\:w-96,
+body.login.dark .w-full.sm\:w-96 {
+    background: #1e293b;
+}

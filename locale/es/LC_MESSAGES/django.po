@@ -41,6 +41,9 @@ msgstr "Oscuro"
 msgid "Expand row"
 msgstr "Expandir fila"
 
+msgid "Forgotten your password or username?"
+msgstr "¿Olvidaste tu usuario o contraseña?"
+
 msgid "Go back"
 msgstr "Volver"
 
@@ -130,6 +133,9 @@ msgstr "Desconocido"
 
 msgid "View"
 msgstr "Ver"
+
+msgid "Welcome back to"
+msgstr "Bienvenido de nuevo a"
 
 msgid "You have been successfully logged out from the administration"
 msgstr "Has cerrado sesión correctamente en la administración"
