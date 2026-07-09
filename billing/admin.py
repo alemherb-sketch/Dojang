@@ -18,6 +18,15 @@ class SaleAdmin(RowActionsMixin, ModelAdmin):
     list_filter = ('date',)
     inlines = [SaleItemInline]
     search_fields = ('buyer__username',)
+    readonly_fields = ('total',)
+
+    def save_related(self, request, form, formsets, change):
+        super().save_related(request, form, formsets, change)
+        sale = form.instance
+        total = sum(item.quantity * item.price_at_sale for item in sale.items.all() if item.price_at_sale)
+        if sale.total != total:
+            sale.total = total
+            sale.save(update_fields=['total'])
 
     class Media:
         js = ('js/sale_price.js',)
