@@ -190,6 +190,9 @@ UNFOLD = {
         "light": lambda request: static("icon.svg"),  # Placeholder
         "dark": lambda request: static("icon.svg"),
     },
+    "STYLES": [
+        lambda request: static("css/unfold_custom.css"),
+    ],
     "COLORS": {
         "primary": {
             "50": "240 249 255",
