@@ -143,7 +143,7 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-MEDIA_URL = 'media/'
+MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Django 6.0 uses STORAGES (the old STATICFILES_STORAGE setting is ignored).
@@ -158,6 +158,7 @@ STORAGES = {
 # unstyled; USE_FINDERS makes WhiteNoise resolve /static/ files directly.
 WHITENOISE_USE_FINDERS = True
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
 
 # Default primary key field type
