@@ -144,12 +144,16 @@ STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Django 6.0 uses STORAGES (the old STATICFILES_STORAGE setting is ignored).
-# WhiteNoise's non-manifest compressed storage serves collected static files in
-# production without the strict manifest lookups that previously caused 500s.
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},
     "staticfiles": {"BACKEND": "whitenoise.storage.CompressedStaticFilesStorage"},
 }
+
+# Serve static files via Django's staticfiles finders (app dirs + STATICFILES_DIRS)
+# so WhiteNoise works even when `collectstatic` has not populated STATIC_ROOT.
+# On Railway the platform start command bypassed collectstatic, leaving the admin
+# unstyled; USE_FINDERS makes WhiteNoise resolve /static/ files directly.
+WHITENOISE_USE_FINDERS = True
 
 CSRF_TRUSTED_ORIGINS = ['https://*.up.railway.app']
 
