@@ -40,15 +40,6 @@ def get_product_price(request, product_id):
 
 from django.conf import settings
 from django.conf.urls.static import static
-from django.core.management import call_command
-from django.http import HttpResponse
-
-def force_migrate(request):
-    try:
-        call_command('migrate', interactive=False)
-        return HttpResponse("Migrated successfully")
-    except Exception as e:
-        return HttpResponse(f"Error: {e}")
 
 urlpatterns = [
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
@@ -57,7 +48,6 @@ urlpatterns = [
     path('api/', include('api.urls')),
     path('api/concept-price/<int:concept_id>/', get_concept_price, name='get_concept_price'),
     path('api/product-price/<int:product_id>/', get_product_price, name='get_product_price'),
-    path('force-migrate/', force_migrate),
 ]
 
 from django.urls import re_path
