@@ -25,6 +25,9 @@ class ActivityAdmin(RowActionsMixin, ModelAdmin):
     fields = ('title', 'content', 'image', 'image_preview', 'is_active')
     readonly_fields = ('image_preview',)
 
+    class Media:
+        js = ('js/image_preview.js',)
+
     @admin.display(description='Vista previa de imagen')
     def image_preview(self, obj):
         if obj and obj.image:
