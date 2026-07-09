@@ -149,6 +149,15 @@ export default function Dashboard() {
                         })}
                       </p>
                       <p style={styles.activityText}>{act.content}</p>
+                      {act.image && (
+                        <div style={{ marginTop: '12px', borderRadius: '10px', overflow: 'hidden' }}>
+                          <img 
+                            src={act.image} 
+                            alt={act.title} 
+                            style={{ width: '100%', height: 'auto', display: 'block', objectFit: 'cover' }} 
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))
