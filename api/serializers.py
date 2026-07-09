@@ -10,9 +10,17 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'email', 'first_name', 'last_name', 'role', 'phone_number', 'qr_code')
 
 class ActivitySerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
     class Meta:
         model = Activity
         fields = '__all__'
+        
+    def get_image(self, obj):
+        if obj.image_base64:
+            return obj.image_base64
+        if obj.image:
+            return obj.image.url
+        return None
 
 class PaymentSerializer(serializers.ModelSerializer):
     class Meta:

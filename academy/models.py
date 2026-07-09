@@ -14,15 +14,27 @@ class Grade(models.Model):
         return self.name
 
 class Activity(models.Model):
-    title = models.CharField('Título', max_length=200, help_text="Título del anuncio o actividad")
-    content = models.TextField('Contenido', help_text="Detalle de la actividad")
-    image = models.ImageField('Imagen', upload_to='activities/', blank=True, null=True, help_text="Opcional. Imagen representativa de la actividad")
+    title = models.CharField('Título', max_length=200)
+    content = models.TextField('Contenido')
+    image = models.ImageField('Imagen (opcional)', upload_to='activities/', null=True, blank=True)
+    image_base64 = models.TextField('Imagen Base64', blank=True, null=True, editable=False)
     date_posted = models.DateTimeField('Fecha de Publicación', auto_now_add=True)
     is_active = models.BooleanField('Activo', default=True)
 
+    def save(self, *args, **kwargs):
+        if self.image and not self.image_base64:
+            try:
+                import base64
+                self.image.file.seek(0)
+                file_data = self.image.file.read()
+                self.image_base64 = "data:image/png;base64," + base64.b64encode(file_data).decode('utf-8')
+            except Exception:
+                pass
+        super().save(*args, **kwargs)
+
     class Meta:
-        verbose_name = 'Actividad / Aviso'
-        verbose_name_plural = 'Actividades / Avisos'
+        verbose_name = 'Actividad'
+        verbose_name_plural = 'Actividades'
         ordering = ['-date_posted']
 
     def __str__(self):
