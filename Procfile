@@ -1,2 +1,1 @@
-release: python manage.py migrate --noinput && python manage.py ensure_superuser
-web: gunicorn backend.wsgi --log-file -
+web: python manage.py migrate --noinput && python manage.py ensure_superuser && gunicorn backend.wsgi --log-file -
